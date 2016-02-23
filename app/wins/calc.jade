@@ -3,5 +3,10 @@ html
   head
     title CO Suivi - Calculateur de vitesse
     meta(charset='utf-8')
+    script(src='../vendor.js')
+    script(src='../scripts/main.js')
   body
-    p W.I.P.
+    h1 CO Suivi - Calculateur de vitesse
+    button(onclick='window.close();') Fermer
+    div(id='calc')
+    script CosApp.run('calc')

@@ -34,23 +34,21 @@ balsWin = new ElecWin '/wins/bals.html'
 
 # IPC COMMS #####################################
 
-ipcMain.on 'async',(evt,arg) ->
+ipcMain.on 'async',(evt,args) ->
   #
   #evt.sender.send 'msg'
   #
-  switch arg.name
-    #
+  switch args.cmd
     when 'open'
-      #
-      #
-      mainWin.open true
-      #
+      switch args.name
+        when 'calc' then calcWin.open true
+        when 'bals' then balsWin.open true
     #
   #
 
-ipcMain.on 'sync',(evt,arg) ->
+ipcMain.on 'sync',(evt,args) ->
   #
-  switch arg.name
+  switch args.cmd
     when 'open'
       #
       on

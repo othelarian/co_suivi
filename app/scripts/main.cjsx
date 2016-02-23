@@ -1,19 +1,13 @@
 'use strict'
 
+# GLOBAL VARIABLES ##############################
+
+ipcRenderer = null
+
 # COS CALC COMPONENT ############################
 
 CosCalcCpt = React.createClass
-  render: ->
-    #
-    #
-    <div>calc page</div>
-    #
-
-###
-
-module.exports = React.createClass
-  getInitialState: ->
-    mins: 0, secs: 0, dist: 0
+  getInitialState: -> mins: 0,secs: 0,dist: 0
   upDist: (evt) ->
     if not isNaN(evt.target.value) and evt.target.value[0] != '-'
       @setState dist: evt.target.value
@@ -33,23 +27,35 @@ module.exports = React.createClass
       Math.round(res*10)/10
   render: ->
     res = @checkRes()
-    txt_res = if res <= 0 then '--,-' else res
+    res = if res <= 0 then '--,-' else res
     <div>
-      <p>Distance (en m) : <input onChange={@upDist} value={@state.dist} type='number' /></p>
+      <p>Distance (en m) : <input onChange={@upDist} value={@state.dist} /></p>
       <p>
-        <label>Durée : </label>
-        <input className='short' maxLength='2' onChange={@upMins} value={@state.mins} type='number' />mins&nbsp;
-        <input className='short' maxLength='2' onChange={@upSecs} value={@state.secs} type='number' />secs
+        Durée :
+        <input className='arch_shortinp' maxLength='2' onChange={@upMins} value={@state.mins} />
+        mins&nbsp;
+        <input className='arch_shortinp' maxLength='2' onChange={@upSecs} value={@state.secs} />
+        secs
       </p>
-      <p className='result'>{txt_res} km/h</p>
+      <p className='arch_result'>{res} km/h</p>
     </div>
-
-###
 
 # APP ###########################################
 
 CosApp =
+  ipcAsync: (evt) -> ipcRenderer.send 'async',evt
+  ipcAsyncReply: (evt,args) ->
+    #
+    console.log evt
+    console.log args
+    #
+  ipcSync: (msg) ->
+    #
+    console.log msg
+    #
+    #
   run: (page) ->
+    ipcRenderer = require('electron').ipcRenderer
     switch page
       when 'main'
         #
@@ -61,8 +67,4 @@ CosApp =
         console.log 'we are on the balises page !'
         #
         #
-      when 'calc'
-        #
-        console.log 'we are on the calculator page !'
-        #
-        #
+      when 'calc' then ReactDOM.render <CosCalcCpt />,document.getElementById 'calc'
