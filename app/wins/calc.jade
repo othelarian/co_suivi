@@ -4,9 +4,11 @@ html
     title CO Suivi - Calculateur de vitesse
     meta(charset='utf-8')
     script(src='../vendor.js')
+    script(src='../scripts/ui.js')
     script(src='../scripts/main.js')
+    link(rel='stylesheet',href='../styles/basic.css')
   body
     h1 CO Suivi - Calculateur de vitesse
-    button(onclick='window.close();') Fermer
+    div(id='close',class='closebtn')
     div(id='calc')
     script CosApp.run('calc')

@@ -1,0 +1,47 @@
+// COLORS #######################################
+
+cosBlue = #48a1da
+
+// COMMON #######################################
+
+body
+  box-sizing: border-box
+  padding: 0
+  font-size: 18px
+
+h1
+  font-size: 1.4rem
+
+// UI ###########################################
+
+.closebtn
+  position: absolute
+  top: 15px
+  right: 20px
+
+.cos_shortinp
+  width: 50px
+
+.cos_result
+  text-align: center
+  font-size: 1.5rem
+
+// SVG UI #######################################
+
+.svgBtn
+  width: 25px
+  height: 25px
+  background: white
+  border: solid 1px gray
+  border-radius: 3px
+  *
+    fill: gray
+  &:hover
+    border: solid 1px cosBlue
+    *
+      fill: cosBlue
+  &:active
+    background: gray
+    border: solid 1px white
+    *
+      fill: white

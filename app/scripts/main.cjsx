@@ -3,6 +3,31 @@
 # GLOBAL VARIABLES ##############################
 
 ipcRenderer = null
+btns = width: 25,height: 25
+
+# COS BALS MENU COMPONENT #######################
+
+# COS MAIN MENU COMPONENT #######################
+
+CosMainMenuCpt = React.createClass
+  render: ->
+    #
+    #
+    <div>test 123</div>
+    #
+
+# COS SUB MENU COMPONENT ########################
+
+CosSubMenuCpt = React.createClass
+  render: ->
+    #
+    #
+    <div>test 123</div>
+    #
+
+# COS LIST STUDS COMPONENT ######################
+
+# COS FORM STUD COMPONENT #######################
 
 # COS CALC COMPONENT ############################
 
@@ -31,18 +56,19 @@ CosCalcCpt = React.createClass
     <div>
       <p>Distance (en m) : <input onChange={@upDist} value={@state.dist} /></p>
       <p>
-        Durée :
-        <input className='arch_shortinp' maxLength='2' onChange={@upMins} value={@state.mins} />
+        Durée :&nbsp;
+        <input className='cos_shortinp' maxLength='2' onChange={@upMins} value={@state.mins} />
         mins&nbsp;
-        <input className='arch_shortinp' maxLength='2' onChange={@upSecs} value={@state.secs} />
+        <input className='cos_shortinp' maxLength='2' onChange={@upSecs} value={@state.secs} />
         secs
       </p>
-      <p className='arch_result'>{res} km/h</p>
+      <p className='cos_result'>{res} km/h</p>
     </div>
 
 # APP ###########################################
 
 CosApp =
+  closeWin: -> window.close()
   ipcAsync: (evt) -> ipcRenderer.send 'async',evt
   ipcAsyncReply: (evt,args) ->
     #
@@ -59,7 +85,9 @@ CosApp =
     switch page
       when 'main'
         #
-        console.log 'we are on the main page !'
+        # TODO : encapsulation dans le store
+        #
+        ReactDOM.render <CosMainMenuCpt />,document.getElementById 'main_menu'
         #
         #
       when 'bals'
@@ -68,3 +96,4 @@ CosApp =
         #
         #
       when 'calc' then ReactDOM.render <CosCalcCpt />,document.getElementById 'calc'
+    ReactDOM.render <CosSvgBtn cb={CosApp.closeWin} icon="cross" />,document.getElementById 'close'

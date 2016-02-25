@@ -4,10 +4,16 @@ html
     title CO Suivi
     meta(charset='utf-8')
     script(src='../vendor.js')
+    script(src='../scripts/ui.js')
     script(src='../scripts/main.js')
     link(rel='stylesheet',href='../styles/basic.css')
   body
-    div(id='main')
+    h1 CO Suivi
+    div(id='close',class='closebtn')
+    div(id='main_menu')
+    div(id='sub_menu')
+    div(id='list_studs')
+    div(id='form_stud')
     //temp btns
     input(type='button',onclick='CosApp.ipcAsync({cmd: "open",name: "calc"});',value='calc')
     input(type='button',onclick='CosApp.ipcAsync({cmd: "open",name: "bals"});',value='bals')

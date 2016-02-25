@@ -29,7 +29,7 @@ reg_cos = new RegExp '[\.]cos$'
 reg_bals = new RegExp '[\.]balcos$'
 
 mainWin = new ElecWin '/wins/main.html',600,300
-calcWin = new ElecWin '/wins/calc.html'
+calcWin = new ElecWin '/wins/calc.html',400,230
 balsWin = new ElecWin '/wins/bals.html'
 
 # IPC COMMS #####################################
@@ -41,7 +41,7 @@ ipcMain.on 'async',(evt,args) ->
   switch args.cmd
     when 'open'
       switch args.name
-        when 'calc' then calcWin.open true
+        when 'calc' then calcWin.open()
         when 'bals' then balsWin.open true
     #
   #
