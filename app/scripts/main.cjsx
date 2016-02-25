@@ -3,17 +3,40 @@
 # GLOBAL VARIABLES ##############################
 
 ipcRenderer = null
-btns = width: 25,height: 25
+btns = width: 24,height: 24
 
 # COS BALS MENU COMPONENT #######################
 
 # COS MAIN MENU COMPONENT #######################
 
 CosMainMenuCpt = React.createClass
+  newDoc: (evt) ->
+    #
+    #
+    console.log 'create'
+    #
+  openDoc: (evt) ->
+    #
+    #
+    console.log 'open'
+    #
+  saveDoc: (evt) ->
+    #
+    #
+    console.log 'save'
+    #
   render: ->
-    #
-    #
-    <div>test 123</div>
+    <span>
+      <CosSvgBtn cb={@newDoc} icon='newdoc' />
+      <CosSvgBtn cb={@openDoc} icon='opendoc' />
+      <CosSvgBtn cb={@saveDoc} icon='savedoc' />
+      <span className="cos_spacer">&nbsp;</span>
+      <CosSvgBtn cb={@newDoc} icon='newdoc' />
+      I |
+      E |
+      CALC |
+      BALS
+    </span>
     #
 
 # COS SUB MENU COMPONENT ########################

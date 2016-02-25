@@ -7,6 +7,7 @@ cosBlue = #48a1da
 body
   box-sizing: border-box
   padding: 0
+  margin: 0
   font-size: 18px
 
 h1
@@ -14,10 +15,28 @@ h1
 
 // UI ###########################################
 
+.main_head
+  vertical-align: top
+  margin-top: 15px
+  div
+    vertical-align: top
+    display: inline-block
+
+.main_titre
+  height: 25px
+  margin: auto 20px
+  padding: auto
+  font-weight: bold
+  font-size: 1.4rem
+
 .closebtn
   position: absolute
   top: 15px
   right: 20px
+
+.cos_spacer
+  display: inline-block
+  width: 20px
 
 .cos_shortinp
   width: 50px
@@ -29,8 +48,9 @@ h1
 // SVG UI #######################################
 
 .svgBtn
-  width: 25px
-  height: 25px
+  margin: 2px
+  width: 24px
+  height: 24px
   background: white
   border: solid 1px gray
   border-radius: 3px

@@ -20,7 +20,7 @@ config =
   libs:
     classic: ['react','react-dom','hoverboard']
     nodist: ['lodash']
-    nomins: ['page']
+    nomins: []
 
 # REQUIRES ######################################
 
