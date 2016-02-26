@@ -3,7 +3,7 @@
 # GLOBAL VARIABLES ##############################
 
 ipcRenderer = null
-btns = width: 24,height: 24
+btns = width: 22,height: 22
 
 # COS BALS MENU COMPONENT #######################
 
@@ -25,19 +25,30 @@ CosMainMenuCpt = React.createClass
     #
     console.log 'save'
     #
+  importCsv: (evt) ->
+    #
+    #
+    console.log 'import csv'
+    #
+  exportCsv: (evt) ->
+    #
+    #
+    console.log 'export csv'
+    #
+  openCalc: (evt) -> CosApp.ipcAsync cmd: 'open',name: 'calc'
+  openBals: (evt) -> CosApp.ipcAsync cmd: 'open',name: 'bals'
   render: ->
     <span>
       <CosSvgBtn cb={@newDoc} icon='newdoc' />
       <CosSvgBtn cb={@openDoc} icon='opendoc' />
       <CosSvgBtn cb={@saveDoc} icon='savedoc' />
-      <span className="cos_spacer">&nbsp;</span>
-      <CosSvgBtn cb={@newDoc} icon='newdoc' />
-      I |
-      E |
-      CALC |
-      BALS
+      <span className='cos_spacer'>&nbsp;</span>
+      <CosSvgBtn cb={@importCsv} icon='import' />
+      <CosSvgBtn cb={@exportCsv} icon='export' />
+      <span className='cos_spacer'>&nbsp;</span>
+      <CosSvgBtn cb={@openCalc} icon='calc' />
+      <CosSvgBtn cb={@openBals} icon='balise' />
     </span>
-    #
 
 # COS SUB MENU COMPONENT ########################
 
