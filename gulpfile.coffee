@@ -1,5 +1,27 @@
 'use strict'
 
+# REQUIRES ######################################
+
+changed = require 'gulp-changed'
+child_p = require 'child_process'
+concat = require 'gulp-concat'
+del = require 'del'
+elecpack = require 'electron-packager'
+gulp = require 'gulp'
+gutil = require 'gulp-util'
+gplumber = require 'gulp-plumber'
+gjade = require 'gulp-jade'
+gstylus = require 'gulp-stylus'
+lod = require 'lodash'
+process = require 'process'
+readl = require 'readline'
+sq = require 'streamqueue'
+srcmap = require 'gulp-sourcemaps'
+through = require 'through2'
+uglify = require 'gulp-uglify'
+webpack = require 'webpack'
+wps = require 'webpack-stream'
+
 # CONFIGURATIONS ################################
 
 config =
@@ -7,46 +29,42 @@ config =
   app_path: 'app'
   build_path: 'build'
   release_path: 'release'
-  electron_version: '0.36.8'
+  electron_version: '0.37.5'
   rootfile: 'electric.js'
   src_path:
-    copy: 'app/vendor.*'
+    electric: 'app/electric.coffee'
+    jade: 'app/**/*.jade'
     parse_package: './package.json'
-    parse_jade: 'app/**/*.jade'
-    parse_stylus: 'app/**/*.styl'
-    parse_coffee: 'app/**/*.coffee'
-    parse_cjsx: 'app/**/*.cjsx'
-  build_args: ['copy','parse_package','parse_jade','parse_stylus','parse_coffee','parse_cjsx']
-  libs:
-    classic: ['react','react-dom','hoverboard']
-    nodist: ['lodash']
-    nomins: []
-
-# REQUIRES ######################################
-
-gulp = require 'gulp'
-gutil = require 'gulp-util'
-gplumber = require 'gulp-plumber'
-gjade = require 'gulp-jade'
-gcoffee = require 'gulp-coffee'
-gcjsx = require 'gulp-cjsx'
-gstylus = require 'gulp-stylus'
-srcmap = require 'gulp-sourcemaps'
-concat = require 'gulp-concat'
-changed = require 'gulp-changed'
-uglify = require 'gulp-uglify'
-sq = require 'streamqueue'
-del = require 'del'
-through = require 'through2'
-lod = require 'lodash'
-process = require 'process'
-child_p = require 'child_process'
-readl = require 'readline'
-elecpack = require 'electron-packager'
+    scripts: 'app/scripts/*'
+    static: ''
+    stylus: 'app/**/*.styl'
+  build_args: ['static','parse_package','jade','stylus','scripts','electric']
+  wp_scripts:
+    entry:
+      calc: './app/scripts/calc.cjsx'
+      bals: './app/scripts/bals.cjsx'
+      main: './app/scripts/main.cjsx'
+      vendor: './app/scripts/vendor.coffee'
+    output: filename: '[name].js'
+    module:
+      loaders: [
+        {test: /\.coffee$/,loader: 'coffee-loader'}
+        {test: /\.cjsx$/,loader: 'coffee-jsx-loader'}
+      ]
+    plugins: [new webpack.optimize.UglifyJsPlugin()]
+  wp_electric:
+    entry:
+      comm: './app/comm.coffee'
+      electric: './app/electric.coffee'
+    target: 'electron'
+    output: filename: '[name].js'
+    module: loaders: [{test: /\.coffee$/,loader: 'coffee-loader'}]
+    plugins: [new webpack.optimize.UglifyJsPlugin()]
 
 # GLOBAL VARIABLES & FUNCTIONS ##################
 
 prod = false
+wp_watch = false
 rl = null
 pack_args = null
 pack_lvl = null
@@ -123,8 +141,6 @@ gulp.task 'default', ->
   gutil.log ''
   gutil.log 'Just after cloning the project, launch in console :'
   gutil.log '# npm install'
-  gutil.log '# gulp elec:vendor'
-  gutil.log gutil.colors.red '# npm link ...'
   gutil.log ''
   gutil.log 'The command \'gulp elec:vendor\' must be run every time the list of'
   gutil.log 'external libs changes.'
@@ -140,9 +156,6 @@ gulp.task 'default', ->
   gutil.log '   ',gutil.colors.underline 'gulp elec:build'
   gutil.log 'Build the project in dev mode. Vendor file is copied, but not generated.'
   gutil.log ''
-  gutil.log '   ',gutil.colors.underline 'gulp elec:vendor'
-  gutil.log 'Build the vendor file from the conf, and save it in the build directory.'
-  gutil.log ''
   gutil.log '   ',gutil.colors.underline 'gulp elec:watch'
   gutil.log 'Build in dev mode, and then watch to rebuild every change.'
   gutil.log ''
@@ -155,9 +168,9 @@ gulp.task 'prod', -> prod = true
 gulp.task 'clean', -> del config.build_path+'/**/*'
 gulp.task 'build',config.build_args
 
-gulp.task 'copy', ->
+gulp.task 'static', ->
   gulp
-    .src config.src_path.copy
+    .src config.src_path.static
     .pipe changed config.build_path
     .pipe gulp.dest config.build_path
 
@@ -167,42 +180,37 @@ gulp.task 'parse_package', ->
     .pipe clean_package()
     .pipe gulp.dest config.build_path
 
-gulp.task 'parse_jade', ->
+gulp.task 'jade', ->
   gulp
-    .src config.src_path.parse_jade
+    .src config.src_path.jade
     .pipe changed config.build_path
     .pipe if not prod then gplumber() else gutil.noop()
     .pipe gjade()
     .pipe gulp.dest config.build_path
 
-gulp.task 'parse_stylus', ->
+gulp.task 'stylus', ->
   gulp
-    .src config.src_path.parse_stylus
+    .src config.src_path.stylus
     .pipe if not prod then gplumber() else gutil.noop()
     .pipe if not prod then srcmap.init() else gutil.noop()
     .pipe gstylus compress: true
     .pipe if not prod then srcmap.write() else gutil.noop()
     .pipe gulp.dest config.build_path
 
-gulp.task 'parse_coffee', ->
+gulp.task 'scripts', ->
+  if wp_watch then config.wp_scripts.watch = true
   gulp
-    .src config.src_path.parse_coffee
-    .pipe changed config.build_path
+    .src config.src_path.scripts
     .pipe if not prod then gplumber() else gutil.noop()
-    .pipe if not prod then srcmap.init() else gutil.noop()
-    .pipe gcoffee bare: true
-    .pipe uglify()
-    .pipe if not prod then srcmap.write() else gutil.noop()
-    .pipe gulp.dest config.build_path
+    .pipe wps config.wp_scripts
+    .pipe gulp.dest config.build_path+'/scripts'
 
-gulp.task 'parse_cjsx', ->
+gulp.task 'electric', ->
+  if wp_watch then config.wp_electric.watch = true
   gulp
-    .src config.src_path.parse_cjsx
+    .src config.src_path.electric
     .pipe if not prod then gplumber() else gutil.noop()
-    .pipe if not prod then srcmap.init() else gutil.noop()
-    .pipe gcjsx bare: true
-    .pipe uglify()
-    .pipe if not prod then srcmap.write() else gutil.noop()
+    .pipe wps config.wp_electric
     .pipe gulp.dest config.build_path
 
 # ELECTRON TASKS ################################
@@ -213,32 +221,10 @@ gulp.task 'elec:launch', ->
   process.chdir config.build_path
   child_p.execFileSync 'electron',[config.rootfile],stdio: [0,1,2]
 
-gulp.task 'elec:vendor', ->
-  nm = 'node_modules/'
-  if prod
-    globs = lod.concat(
-      config.libs.classic.map (lib) -> nm+lib+'/dist/'+lib+'.min.js'
-      config.libs.nodist.map (lib) -> nm+lib+'/'+lib+'.min.js'
-    )
-    mins = config.libs.nomins.map (lib) -> nm+lib+'/'+lib+'.js'
-    sq objectMode: true,
-        gulp.src(mins).pipe uglify()
-        gulp.src globs
-      .pipe concat 'vendor.js'
-      .pipe gulp.dest config.app_path
-  else
-    globs = lod
-      .concat config.libs.nodist,config.libs.nomins
-      .map (lib) -> nm+lib+'/'+lib+'.js'
-      .concat config.libs.classic.map (lib) -> nm+lib+'/dist/'+lib+'.js'
-    gulp
-      .src globs
-      .pipe concat 'vendor.js'
-      .pipe gulp.dest config.app_path
-
 gulp.task 'elec:build',['clean','build']
 
 gulp.task 'elec:watch',['clean','build'], ->
+  wp_watch = true
   for cmd of config.src_path then gulp.watch config.src_path[cmd],[cmd]
 
 gulp.task 'elec:prod',['prod','elec:vendor','elec:build'], -> ask_pack()

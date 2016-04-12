@@ -4,6 +4,7 @@
 
 electron = require 'electron'
 fs = require 'fs'
+process = require 'process'
 
 app = electron.app
 BrowWin = electron.BrowserWindow
@@ -17,7 +18,7 @@ class ElecWin
     @pointer = null
   open: (dev = false) ->
     @pointer = new BrowWin width: @width,height: @height
-    @pointer.loadURL 'file://'+__dirname+@path
+    @pointer.loadURL 'file://'+process.cwd()+@path
     @pointer.on 'closed',(evt) => @pointer = null
     @pointer.setMenuBarVisibility false
     @pointer.setMinimumSize @width,@height
