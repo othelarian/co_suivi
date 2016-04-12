@@ -10,6 +10,7 @@ window.FaFolderOpen = require 'react-icons/lib/fa/folder-open'
 window.FaLocationArrow = require 'react-icons/lib/fa/location-arrow'
 # use it for single balise
 window.FaUpload = require 'react-icons/lib/fa/upload'
+window.Hoverboard = require 'hoverboard'
 window.MdAvTimer = require 'react-icons/lib/md/av-timer'
 window.React = require 'react'
 window.ReactDOM = require 'react-dom'

@@ -3,11 +3,13 @@
 # REQUIRES ######################################
 
 Common = require './common.cjsx'
+Stores = require './main_stores.coffee'
 
-# GLOBAL VARIABLES ##############################
+# STORES ########################################
 
-ipcRenderer = null
-btns = width: 22,height: 22
+window.MainStore = Stores.MainStore
+ListStore = Stores.ListStudentStore
+StudentStore = Stores.StudentStore
 
 # COS MAIN MENU COMPONENT #######################
 
@@ -57,8 +59,14 @@ CosMainMenuCpn = React.createClass
 CosSubMenuCpn = React.createClass
   render: ->
     #
+    console.log @props
     #
-    <div>test 123</div>
+    #
+    menu_show = if @props.name != '' then 'block' else 'none'
+    #
+    <div style={{display:menu_show}}>
+      Sub menu
+    </div>
     #
 
 # COS LIST STUDS COMPONENT ######################
@@ -68,7 +76,6 @@ CosSubMenuCpn = React.createClass
 # APP ###########################################
 
 window.CosApp =
-  closeWin: -> window.close()
   ipcAsync: (evt) -> window.ipcRenderer.send 'async',evt
   ipcAsyncReply: (evt,args) ->
     #
@@ -82,7 +89,12 @@ window.CosApp =
     #
   run: ->
     #
+    # TODO : add list of students
+    # TODO : add details of one student
+    #
+    MainStore.getState (state) ->
+      ReactDOM.render <CosSubMenuCpn {...state} />,document.getElementById 'sub_menu'
+    #
     #
     ReactDOM.render <CosMainMenuCpn />,document.getElementById 'main_menu'
-    #
     ReactDOM.render <Common.CosCloseBtn />,document.getElementById 'close'
