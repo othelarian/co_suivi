@@ -227,4 +227,4 @@ gulp.task 'elec:watch',['clean','build'], ->
   wp_watch = true
   for cmd of config.src_path then gulp.watch config.src_path[cmd],[cmd]
 
-gulp.task 'elec:prod',['prod','elec:vendor','elec:build'], -> ask_pack()
+gulp.task 'elec:prod',['clean','prod','elec:build'], -> ask_pack()

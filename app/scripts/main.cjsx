@@ -8,29 +8,50 @@ Stores = require './main_stores.coffee'
 # STORES ########################################
 
 window.MainStore = Stores.MainStore
-ListStore = Stores.ListStudentStore
-StudentStore = Stores.StudentStore
+window.ListStudentStore = Stores.ListStudentStore
+window.StudentStore = Stores.StudentStore
 
 # COS MAIN MENU COMPONENT #######################
 
 CosMainMenuCpn = React.createClass
   newDoc: (evt) ->
+    if MainStore().name != ''
+      #
+      #
+      console.log 'save before create !'
+      #
     #
+    MainStore.new()
     #
-    console.log 'create'
     #
   openDoc: (evt) ->
+    if MainStore().name != ''
+      #
+      # TODO : save before going anywhere !
+      #
+      console.log "open one"
+      #
+      #
     #
+    # TODO : use ipc to open 'open file' dialog
     #
-    console.log 'open'
+    res = CosApp.ipcSync cmd: 'open'
+    #
+    console.log res
     #
   saveDoc: (evt) ->
     #
+    # TODO : use ipc to communicate
     #
     console.log 'save'
     #
   importCsv: (evt) ->
     #
+    if MainStore().name != ''
+      #
+      #
+      console.log 'save before import !'
+      #
     #
     console.log 'import csv'
     #
@@ -59,7 +80,7 @@ CosMainMenuCpn = React.createClass
 CosSubMenuCpn = React.createClass
   render: ->
     #
-    console.log @props
+    #console.log @props
     #
     #
     menu_show = if @props.name != '' then 'block' else 'none'
@@ -71,7 +92,22 @@ CosSubMenuCpn = React.createClass
 
 # COS LIST STUDS COMPONENT ######################
 
+CosStudListCpn = React.createClass
+  render: ->
+    #
+    console.log @props
+    #
+    <div className='cos_studlist'>test</div>
+    #
+
 # COS FORM STUD COMPONENT #######################
+
+CosDetailsCpn = React.createClass
+  render: ->
+    #
+    #
+    <div className='cos_stud'>test</div>
+    #
 
 # APP ###########################################
 
@@ -82,19 +118,13 @@ window.CosApp =
     console.log evt
     console.log args
     #
-  ipcSync: (msg) ->
-    #
-    console.log msg
-    #
-    #
+  ipcSync: (msg) -> window.ipcRenderer.sendSync 'sync',msg
   run: ->
-    #
-    # TODO : add list of students
-    # TODO : add details of one student
-    #
     MainStore.getState (state) ->
       ReactDOM.render <CosSubMenuCpn {...state} />,document.getElementById 'sub_menu'
-    #
-    #
+    ListStudentStore.getState (state) ->
+      ReactDOM.render <CosStudListCpn {...state} />,document.getElementById 'list_studs'
+    StudentStore.getState (state) ->
+      ReactDOM.render <CosDetailsCpn {...state} />,document.getElementById 'form_stud'
     ReactDOM.render <CosMainMenuCpn />,document.getElementById 'main_menu'
     ReactDOM.render <Common.CosCloseBtn />,document.getElementById 'close'

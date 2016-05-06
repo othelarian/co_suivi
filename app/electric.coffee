@@ -48,13 +48,24 @@ ipcMain.on 'async',(evt,args) ->
   #
 
 ipcMain.on 'sync',(evt,args) ->
-  #
   switch args.cmd
     when 'open'
+      opts =
+        title: 'Ouvrir un suivi :'
+        defaultPath: '~'
+        filters: [
+          {name: 'Fichier cos',extensions: ['cos']}
+          {name: 'Tous les fichiers',extensions: ['*']}
+        ]
+        properties: ['openFile']
+      try
+        evt.returnValue = dialog.showOpenDialog opts
+      catch err
+        evt.returnValue = 'KO'
+    when 'save'
       #
       on
       #
-  #
 
 # APP ###########################################
 
