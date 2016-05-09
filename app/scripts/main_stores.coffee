@@ -34,7 +34,6 @@ ListStudentStore = Hoverboard.compose MainStore, (state) -> state.students
 StudentStore = Hoverboard
   init: ->
     #
-    #
     name: ''
     #
   set: (state,stud) ->
@@ -43,6 +42,8 @@ StudentStore = Hoverboard
     name: stud.name
     #
 StudentStore.init()
+
+# TODO : balises stores
 
 # EXPORTS #######################################
 

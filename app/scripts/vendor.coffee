@@ -9,6 +9,8 @@ window.FaFloppyO = require 'react-icons/lib/fa/floppy-o'
 window.FaFolderOpen = require 'react-icons/lib/fa/folder-open'
 window.FaLocationArrow = require 'react-icons/lib/fa/location-arrow'
 # use it for single balise
+window.FaMinus = require 'react-icons/lib/fa/minus'
+window.FaPlus = require 'react-icons/lib/fa/plus'
 window.FaUpload = require 'react-icons/lib/fa/upload'
 window.Hoverboard = require 'hoverboard'
 window.MdAvTimer = require 'react-icons/lib/md/av-timer'

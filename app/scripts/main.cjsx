@@ -14,36 +14,10 @@ window.StudentStore = Stores.StudentStore
 # COS MAIN MENU COMPONENT #######################
 
 CosMainMenuCpn = React.createClass
-  newDoc: (evt) ->
-    if MainStore().name != ''
-      #
-      #
-      console.log 'save before create !'
-      #
-    #
-    MainStore.new()
+  exportCsv: (evt) ->
     #
     #
-  openDoc: (evt) ->
-    if MainStore().name != ''
-      #
-      # TODO : save before going anywhere !
-      #
-      console.log "open one"
-      #
-      #
-    #
-    # TODO : use ipc to open 'open file' dialog
-    #
-    res = CosApp.ipcSync cmd: 'open'
-    #
-    console.log res
-    #
-  saveDoc: (evt) ->
-    #
-    # TODO : use ipc to communicate
-    #
-    console.log 'save'
+    console.log 'export csv'
     #
   importCsv: (evt) ->
     #
@@ -55,13 +29,33 @@ CosMainMenuCpn = React.createClass
     #
     console.log 'import csv'
     #
-  exportCsv: (evt) ->
+  newDoc: (evt) ->
+    if MainStore().name != ''
+      #
+      #
+      console.log 'save before create !'
+      #
+    #
+    MainStore.new()
     #
     #
-    console.log 'export csv'
+  openBals: (evt) -> comm.ipcAsync cmd: 'open',name: 'bals'
+  openCalc: (evt) -> comm.ipcAsync cmd: 'open',name: 'calc'
+  openDoc: (evt) ->
+    if MainStore().name != ''
+      #
+      # TODO : save before going anywhere !
+      #
+      console.log "open one"
+      #
+      #
     #
-  openCalc: (evt) -> CosApp.ipcAsync cmd: 'open',name: 'calc'
-  openBals: (evt) -> CosApp.ipcAsync cmd: 'open',name: 'bals'
+    # TODO : use ipc to open 'open file' dialog
+    #
+    res = comm.ipcSync cmd: 'open'
+    #
+    console.log res
+    #
   render: ->
     <span>
       <FaFile onClick={@newDoc} className='iconBtn' />
@@ -74,6 +68,12 @@ CosMainMenuCpn = React.createClass
       <MdAvTimer onClick={@openCalc} className='iconBtn' />
       <FaCompass onClick={@openBals} className='iconBtn' />
     </span>
+  saveDoc: (evt) ->
+    #
+    # TODO : use ipc to communicate
+    #
+    console.log 'save'
+    #
 
 # COS SUB MENU COMPONENT ########################
 
@@ -112,13 +112,6 @@ CosDetailsCpn = React.createClass
 # APP ###########################################
 
 window.CosApp =
-  ipcAsync: (evt) -> window.ipcRenderer.send 'async',evt
-  ipcAsyncReply: (evt,args) ->
-    #
-    console.log evt
-    console.log args
-    #
-  ipcSync: (msg) -> window.ipcRenderer.sendSync 'sync',msg
   run: ->
     MainStore.getState (state) ->
       ReactDOM.render <CosSubMenuCpn {...state} />,document.getElementById 'sub_menu'

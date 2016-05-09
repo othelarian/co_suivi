@@ -32,7 +32,7 @@ config =
   electron_version: '0.37.5'
   rootfile: 'electric.js'
   src_path:
-    electric: 'app/electric.coffee'
+    electric: ['app/electric.coffee','app/comm.coffee']
     jade: 'app/**/*.jade'
     parse_package: './package.json'
     scripts: 'app/scripts/*'
