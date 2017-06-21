@@ -36,9 +36,9 @@ CosBalisesMenuCpn = React.createClass
     <span>
       <select></select>
       <span className='cos_spacer'>&nbsp;</span>
-      <FaMinus onClick={@delete} className='iconBtn' />
-      <FaPlus onClick={@create} className='iconBtn' />
-      <FaDownload onClick={@add} className='iconBtn' />
+      <span><FaMinus onClick={@delete} className='iconBtn' /></span>
+      <span><FaPlus onClick={@create} className='iconBtn' /></span>
+      <span><FaDownload onClick={@add} className='iconBtn' /></span>
     </span>
     #
 
